@@ -1,4 +1,5 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, log_loss, confusion_matrix, plot_confusion_matrix, f1_score, roc_auc_score
+import matplotlib.pyplot as plt
 import numpy as np
 
 def evaluate_model(model, X, y, plot_cf):
@@ -23,9 +24,9 @@ def evaluate_model(model, X, y, plot_cf):
     y_preds = model.predict(X)
 
     acc_score = accuracy_score(y, y_preds)
-    precision = precision_score(y, y_preds, average='weighted')
-    recall = recall_score(y, y_preds, average='weighted')
-    f1 = f1_score(y, y_preds, average='weighted')
+    precision = precision_score(y, y_preds)
+    recall = recall_score(y, y_preds)
+    f1 = f1_score(y, y_preds)
     try:
         roc = roc_auc_score(y, model.decision_function(X))
     except AttributeError:
@@ -38,7 +39,10 @@ def evaluate_model(model, X, y, plot_cf):
     print(f"ROC: {roc:.4f}")
 
     if plot_cf == True:
-        plot_confusion_matrix(model, X, y)
+        fig, ax = plt.subplots()
+        ax.grid(False)
+        
+        plot_confusion_matrix(model, X, y, ax=ax, normalize=True, cmap='Blues')
 
 
     return acc_score, precision, recall, f1
